@@ -51,20 +51,20 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 brew tap sambadevi/powerlevel9k
 brew install powerlevel9k
 brew install z
-brew tap caskroom/fonts
+brew tap homebrew/cask-fonts
 brew cask install font-hack-nerd-font
 
 
 # Dev
-brew install node
+brew install node@12 # Specific node (latest LTS)
 brew install yarn
 
 brew cask install java
 brew install sbt
 
-brew install heroku
+#brew install heroku
 
-brew install vagrant
+brew cask install vagrant
 brew cask install virtualbox
 
 
