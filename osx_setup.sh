@@ -6,10 +6,6 @@
 # Inspired by: https://gist.github.com/millermedeiros/6615994
 
 
-# Ask for the administrator password upfront
-sudo -v
-
-
 ### Install CLI tools and common software via Homebrew
 
 
@@ -17,7 +13,7 @@ sudo -v
 # Install if we don't have it
 if test ! $(which brew); then
   echo "Installing homebrew..."
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 echo "Updating homebrew..."
@@ -57,8 +53,7 @@ chsh -s /bin/zsh
 
 
 #oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 # Install font containing those fancy icons used in zsh theme
 # brew tap homebrew/cask-fonts
 # brew install --cask font-hack-nerd-font # Will be installed via p10k configure
@@ -76,7 +71,7 @@ brew install yarn
 # brew install --cask java
 # brew install sbt
 
-brew install heroku
+brew tap heroku/brew && brew install heroku
 
 # brew install --cask vagrant
 # brew install --cask virtualbox
