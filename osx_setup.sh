@@ -6,9 +6,11 @@
 # Inspired by: https://gist.github.com/millermedeiros/6615994
 
 
+# Ask for the administrator password upfront
+sudo -v
+
 
 ### Install CLI tools and common software via Homebrew
-
 
 
 # Check for Homebrew,
@@ -21,24 +23,33 @@ fi
 echo "Updating homebrew..."
 brew update
 
+# Save Homebrew’s installed location.
+BREW_PREFIX=$(brew --prefix)
+
+# Install GNU core utilities (those that come with macOS are outdated).
+# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+brew install coreutils
+ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
+
 
 # Essential Apps
-brew cask install 1password
-brew cask install dropbox
-brew cask install nextcloud
+brew install --cask 1password
+brew install --cask bitwarden
+# brew install --cask dropbox
+brew install --cask nextcloud
 # echo "Manual setup of dropbox & nextcloud account required to start syncing files needed for complete setup!"
 # read -p "Press [Enter] key after this..."
 
-brew cask install bettertouchtool
-brew cask install keepingyouawake
-brew cask install vlc
+brew install --cask bettertouchtool
+brew install --cask keepingyouawake
+brew install --cask vlc
 
 # Util
 brew install git
 #brew install wget
 
 # Terminal
-brew cask install iterm2
+brew install --cask iterm2
 brew install zsh zsh-completions
 
 # To set zsh as your default shell
@@ -48,48 +59,56 @@ chsh -s /bin/zsh
 #oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-brew tap sambadevi/powerlevel9k
-brew install powerlevel9k
+# Install font containing those fancy icons used in zsh theme
+# brew tap homebrew/cask-fonts
+# brew install --cask font-hack-nerd-font # Will be installed via p10k configure
+
+# theme
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
 brew install z
-brew tap homebrew/cask-fonts
-brew cask install font-hack-nerd-font
 
 
 # Dev
-brew install node@12 # Specific node (latest LTS)
+brew install node@14 # Specific node (latest LTS)
 brew install yarn
 
-brew cask install java
-brew install sbt
+# brew install --cask java
+# brew install sbt
 
-#brew install heroku
+brew install heroku
 
-brew cask install vagrant
-brew cask install virtualbox
+# brew install --cask vagrant
+# brew install --cask virtualbox
 
 
 # IDE / editors
-brew cask install sublime-text
-brew cask install visual-studio-code
+brew install --cask sublime-text
+brew install --cask visual-studio-code
 
 
 # Messaging
-brew cask install telegram
-brew cask install slack
+brew install --cask telegram
+brew install --cask slack
 
 # browsers
-brew cask install firefox
-brew cask install google-chrome
-brew cask install brave-browser
+brew install --cask firefox
+brew install --cask google-chrome
+brew install --cask brave-browser
 
 # quick look plugins (https://github.com/sindresorhus/quick-look-plugins)
-brew cask install qlmarkdown quicklook-json webpquicklook quicklookase qlvideo
+brew install qlcolorcode qlstephen qlmarkdown quicklook-json qlimagesize qlvideo
+xattr -d -r com.apple.quarantine ~/Library/QuickLook
+
+
+# Remove outdated versions from the cellar.
+brew cleanup
 
 
 # Setu daily cronjob over lunch to auto update all brew formulas
-croncmd="/usr/local/bin/brew update && /usr/local/bin/brew upgrade"
-cronjob="15 12 * * * $croncmd"
-( crontab -l | grep -v -F "$croncmd" ; echo "$cronjob" ) | crontab -
+# croncmd="/usr/local/bin/brew update && /usr/local/bin/brew upgrade"
+# cronjob="15 12 * * * $croncmd"
+# ( crontab -l | grep -v -F "$croncmd" ; echo "$cronjob" ) | crontab -
 
 
 
@@ -103,10 +122,6 @@ cronjob="15 12 * * * $croncmd"
 
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
-
-# Menu bar: show remaining battery time (on pre-10.8); hide percentage
-defaults write com.apple.menuextra.battery ShowPercent -string "YES"
-defaults write com.apple.menuextra.battery ShowTime -string "YES"
 
 # Expand save panel by default
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
@@ -133,11 +148,18 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Finder: show status bar
 defaults write com.apple.finder ShowStatusBar -bool true
 
-# Finder: allow text selection in Quick Look
-defaults write com.apple.finder QLEnableTextSelection -bool true
+# When performing a search, search the current folder by default
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
 
 # Disable the warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 # Enable snap-to-grid for icons on the desktop and in other icon views
 # /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
@@ -280,6 +302,7 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 
 
 echo "Remember: Manual setup: Restore (or generate) SSH keys"
+echo "Setup zsh theme via: 'p10k configure'"
 #read -p "Press [Enter] key after this..."
 
 
